@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Stream</title>
+    <link rel="stylesheet" href="/pages.css">
+</head>
+
+<body>
+    <!-- Include the correct nav file based on the session -->
+    <%- include(`../components/${navFile}`) %>
+
+        <div class="movies-container-filter">
+            <!-- First section (1/4 of the page) -->
+            <section class="container-filter">
+                <div class="filter-header">
+                    <h2>Filters</h2>
+                    <button class="clear-button" onclick="clearFilters()">Clear</button>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Genres</h3>
+                    <select id="genreSelect">
+                        <option value="" disabled selected>Select a genre</option>
+                        <% genres.forEach(genre=> { %>
+                            <option value="<%= genre._id %>">
+                                <%= genre.genre_name %>
+                            </option>
+                            <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Release in <span id="release-min">1880</span> to <span id="release-max">1995</span></h3>
+                    <div class="range-container">
+                        <input type="range" id="releaseMin" min="1880" max="2025" value="1880">
+                        <input type="range" id="releaseMax" min="1880" max="2025" value="1995">
+                    </div>
+                </div>
+
+                <div class="filter-section runtime-section">
+                    <h3>Runtime of <span id="runtime-min">0</span> to <span id="runtime-max">500</span> Minutes</h3>
+                    <div class="range-container">
+                        <input type="range" id="runtimeMin" min="0" max="500" value="0">
+                        <input type="range" id="runtimeMax" min="0" max="500" value="500">
+                    </div>
+                </div>
+
+                <!-- Filtro de "Most Available" -->
+                <div class="filter-section most-available-section">
+                    <input type="checkbox" id="mostAvailable" class="ui-checkbox">
+                    <label for="mostAvailable">Most Available</label>
+                </div>
+            </section>
+
+            <!-- Second section (3/4 of the page) -->
+            <section class="main-content">
+                <!-- Movies -->
+                <div class="movies-home shows" id="movies-home">
+                    <div class="heading-home">
+                        <h2 class="heading-home-title">Movies In Theaters</h2>
+                    </div>
+
+                    <div class="movies-container-home shows">
+                        <% if (contents && contents.length> 0) { %>
+                            <% contents.forEach(content=> { %>
+                                <a href="/m/<%= content._id %>"
+                                    data-genres="<%= content.genre_ids ? content.genre_ids.join(',') : '' %>">
+                                    <div class="box-home">
+                                        <div class="box-img-home">
+                                            <img src="<%= content.img_content %>" alt="<%= content.content_name %>">
+                                            <div class="overlay">
+                                                <div class="overlay-text">
+                                                    <i class="uil uil-star"></i>
+                                                    <p>
+                                                        <%= content.average_rate %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3>
+                                            <%= content.content_name %>
+                                        </h3>
+                                        <span>
+                                            <%= content.min %> min
+                                        </span>
+                                    </div>
+                                </a>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>No movies available.</p>
+                                        <% } %>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <script>
+            let originalContentsOrder = [];
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const moviesContainer = document.querySelector(".movies-container-home.shows");
+                originalContentsOrder = Array.from(moviesContainer.children);
+            });
+
+            function clearFilters() {
+                document.querySelectorAll('.filter-section select, .filter-section input').forEach(input => {
+                    if (input.type === 'radio' || input.type === 'checkbox') {
+                        input.checked = false;
+                    } else if (input.type === 'range' || input.type === 'text') {
+                        input.value = '';
+                    } else if (input.tagName === 'SELECT') {
+                        input.selectedIndex = 0;
+                    }
+                });
+
+                // Clear the "Most Available" checkbox
+                document.getElementById("mostAvailable").checked = false;
+
+                // Reset the order of contents to the original order
+                const moviesContainer = document.querySelector(".movies-container-home.shows");
+                moviesContainer.innerHTML = "";
+                originalContentsOrder.forEach(content => moviesContainer.appendChild(content));
+            }
+
+            function updateRange(minInput, maxInput, minSpan, maxSpan) {
+                minInput.addEventListener("input", function () {
+                    if (parseInt(minInput.value) > parseInt(maxInput.value)) {
+                        minInput.value = maxInput.value;
+                    }
+                    minSpan.textContent = minInput.value;
+                });
+
+                maxInput.addEventListener("input", function () {
+                    if (parseInt(maxInput.value) < parseInt(minInput.value)) {
+                        maxInput.value = minInput.value;
+                    }
+                    maxSpan.textContent = maxInput.value;
+                });
+            }
+
+            updateRange(
+                document.getElementById("releaseMin"),
+                document.getElementById("releaseMax"),
+                document.getElementById("release-min"),
+                document.getElementById("release-max")
+            );
+
+            updateRange(
+                document.getElementById("runtimeMin"),
+                document.getElementById("runtimeMax"),
+                document.getElementById("runtime-min"),
+                document.getElementById("runtime-max")
+            );
+
+            document.getElementById("mostAvailable").addEventListener("change", function () {
+                const moviesContainer = document.querySelector(".movies-container-home.shows");
+                let contents = Array.from(moviesContainer.children);
+
+                if (this.checked) {
+                    contents.sort((a, b) => {
+                        const ratingA = parseFloat(a.querySelector(".overlay-text p").textContent);
+                        const ratingB = parseFloat(b.querySelector(".overlay-text p").textContent);
+                        return ratingB - ratingA;
+                    });
+                } else {
+                    // Optionally, you can reset the order here if needed
+                }
+
+                moviesContainer.innerHTML = "";
+                contents.forEach(content => moviesContainer.appendChild(content));
+            });
+
+            document.getElementById("genreSelect").addEventListener("change", function () {
+                const selectedGenre = this.value;
+                const moviesContainer = document.querySelector(".movies-container-home.shows");
+                let contents = Array.from(moviesContainer.children);
+
+                if (selectedGenre) {
+                    contents.forEach(content => {
+                        const genreIds = content.getAttribute("data-genres").split(",");
+                        if (genreIds.includes(selectedGenre)) {
+                            content.style.display = "block";
+                        } else {
+                            content.style.display = "none";
+                        }
+                    });
+                } else {
+                    // Se nenhum gênero for selecionado, mostra todos os filmes
+                    contents.forEach(content => content.style.display = "block");
+                }
+            });
+        </script>
+</body>
+
+</html>

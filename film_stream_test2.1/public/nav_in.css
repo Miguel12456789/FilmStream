@@ -1,0 +1,407 @@
+/* Google Fonts - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+:root {
+  --bg-color: #141414;
+  --text-color: #fff;
+  --black-color: #000;
+  --border-color: #ccc;
+  --red-color: #AC1F1F;
+  --dropdpwn-color: #f4f4f4;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 200px;
+  background: var(--bg-color);
+  z-index: 1000;
+}
+
+.nav,
+.nav .nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav {
+  justify-content: space-between;
+}
+
+a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.nav .logo {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.nav .nav-links {
+  column-gap: 20px;
+  list-style: none;
+
+}
+
+.user-icon:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.sidebar-links li a.active {
+  color: var(--red-color);
+  /* Muda a cor para vermelho */
+}
+
+.nav .nav-links a {
+  transition: all 0.2s linear;
+}
+
+.nav .nav-links a:hover {
+  color: var(--red-color);
+  /* Muda a cor para vermelho */
+}
+
+.nav.openSearch .nav-links a {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav .user-icon {
+  color: var(--text-color);
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.nav .navOpenBtn,
+.nav .navCloseBtn {
+  display: none;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 25px;
+}
+
+/* Estilizando o dropdown */
+.dropdown {
+  display: none;
+  /* Inicialmente oculto */
+  position: absolute;
+  top: 85px;
+  /* Ajuste conforme a posição do ícone */
+  right: 190px;
+  /* Alinhado à direita */
+  background-color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 150px;
+  border-radius: 10px;
+
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+}
+
+.dropdown ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.dropdown ul li i {
+  margin-right: 10px;
+  color: var(--black-color);
+}
+
+.dropdown ul li a {
+  text-decoration: none;
+  color: var(--black-color);
+  display: block;
+  flex-grow: 1;
+
+}
+
+.dropdown::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  right: 12px;
+  width: 15px;
+  height: 15px;
+  transform: rotate(45deg);
+  background-color: var(--text-color);
+  border-left: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ...existing code... */
+.dropdown ul li:hover {
+  background-color: var(--dropdpwn-color);
+}
+
+.dropdown ul li.logout {
+  position: relative;
+  /* Para permitir centralizar o pseudo-elemento */
+  padding-top: 10px;
+  /* Espaçamento interno acima do texto */
+}
+
+.dropdown ul li.name_icon img {
+  margin-right: 5px;
+  /* Adiciona um espaçamento de 10px à direita da imagem */
+}
+
+.dropdown ul li.logout::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Mostrar o dropdown quando estiver ativo */
+.user-icon:hover+.dropdown,
+.dropdown:hover {
+  display: block;
+}
+
+/* ------------------------------ SideBar -----------------------------------------*/
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  display: flex;
+  overflow-x: hidden;
+  flex-direction: column;
+  background: var(--bg-color);
+  padding: 25px 20px;
+  transition: all 0.4s ease;
+  z-index: 99;
+}
+
+.sidebar .sidebar-header {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-links h4 {
+  color: var(--text-color);
+  font-weight: 500;
+  white-space: nowrap;
+  margin: 10px 0;
+  position: relative;
+}
+
+.sidebar-links h4 span {
+  opacity: 0;
+}
+
+.sidebar:hover .sidebar-links h4 span {
+  opacity: 1;
+}
+
+.sidebar-links .menu-separator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  transform: scaleX(1);
+  transform: translateY(-50%);
+  background: var(--red-color);
+  transform-origin: right;
+  transition-delay: 0.2s;
+}
+
+.sidebar-links {
+  list-style: none;
+  margin-top: 20px;
+  height: 80%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding-top: 50px;
+  /*Descer os links da sidebar*/
+}
+
+.sidebar-links li a {
+  display: flex;
+  align-items: center;
+  gap: 0 20px;
+  color: var(--text-color);
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 15px 10px;
+  text-decoration: none;
+  transition: all 0.2s linear;
+}
+
+.sidebar-links li a:hover {
+  color: var(--red-color);
+  /* Substitua pelo código de cor desejado */
+  background: none;
+  /* Remove o fundo branco */
+  border-radius: 0;
+  /* Remove o arredondamento */
+  
+}
+
+.sidebar-links li a span,
+.sidebar-links li a i {
+  font-size: 24px;
+  /* Defina o tamanho desejado */
+  vertical-align: middle;
+}
+
+
+/* responsive */
+@media screen and (max-width: 1160px) {
+  .nav {
+    padding: 15px 100px;
+  }
+
+  .dropdown {
+    top: calc(100% + 5px);
+    /* Ajusta o espaçamento para telas menores */
+    left: auto;
+    /* Remove centralização */
+    right: 82px;
+    /* Alinha à direita */
+    transform: none;
+    /* Remove translate */
+  }
+
+  .dropdown::before {
+    left: auto;
+    right: 20px;
+    /* Ajusta a posição do triângulo para o lado direito */
+    transform: rotate(45deg);
+    /* Remove o deslocamento para manter o triângulo visível */
+  }
+
+  .sidebar{
+    width: 78px; /* Ajuste o tamanho da sidebar */
+  }
+  .sidebar:hover {
+    width: 260px; /* Ajuste o tamanho da sidebar */
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .nav {
+    padding: 15px 50px;
+  }
+
+  .dropdown {
+    top: calc(100% + 5px);
+    /* Mantém o espaço do dropdown */
+    left: auto;
+    /* Usa alinhamento à direita */
+    right: 31px;
+    /* Posiciona próximo ao ícone */
+    transform: none;
+    /* Remove translate */
+  }
+
+  .dropdown::before {
+    left: auto;
+    right: 20px;
+    /* Triângulo alinhado corretamente */
+    transform: rotate(45deg);
+  }
+
+}
+
+@media screen and (max-width: 768px) {
+
+  .nav .navOpenBtn,
+  .nav .navCloseBtn {
+    display: block;
+  }
+
+  .nav {
+    padding: 15px 20px;
+  }
+
+  .nav .nav-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100%;
+    max-width: 280px;
+    width: 100%;
+    padding-top: 100px;
+    row-gap: 30px;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    z-index: 100;
+  }
+
+  .nav.openNav .nav-links {
+    left: 0;
+  }
+
+  .nav .navOpenBtn {
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .nav .navCloseBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+
+  }
+
+  .dropdown {
+    top: calc(100% + 5px);
+    /* Ajusta o espaçamento para telas menores */
+    right: 2px;
+    /* Usa `right` em vez de `left` */
+    transform: none;
+    /* Remove centralização para alinhar ao lado direito */
+  }
+
+  .dropdown::before {
+    left: auto;
+    right: 20px;
+    /* Ajusta a posição do triângulo */
+    transform: rotate(45deg);
+    /* Remove o deslocamento para manter o triângulo visível */
+  }
+
+
+}

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Film Stream</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
+</head>
+
+<body>
+    <%- include('../components/ad_sidebar') %>
+
+        <section class="dashboard">
+            <div class="top">
+                <i class="uil uil-bars sidebar-toggle"></i>
+                <div class="search-box">
+                    <i class="uil uil-search"></i>
+                    <input type="text" placeholder="Search here...">
+                </div>
+
+            </div>
+            <div class="dash-content">
+                <% if (error2.length> 0) { %>
+                    <div class="flash-message error">
+                        <%= error2 %>
+                    </div>
+                    <% } %>
+
+                        <% if (success2.length> 0) { %>
+                            <div class="flash-message success">
+                                <%= success2 %>
+                            </div>
+                            <% } %>
+                                <div class="activity">
+                                    <div class="title">
+                                        <i class="uil uil-clapper-board"></i>
+                                        <span class="text">Movie List</span>
+                                        <a href="#" class="btn-add">+ Add Movie</a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Image</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Genre</th>
+                                                    <th scope="col">Min</th>
+                                                    <th scope="col">Release</th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% movies.forEach(movie=> { %>
+                                                    <tr data-id="<%= movie._id %>"
+                                                        data-where="<%= movie.where_to_watch %>"
+                                                        data-background="<%= movie.img_background %>"
+                                                        data-description="<%= movie.description %>">
+                                                        <td>
+                                                            <img src="<%= movie.img_content %>" alt="Movie Image"
+                                                                width="50" height="50">
+                                                        </td>
+                                                        <td>
+                                                            <%= movie.content_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= movie.contentGenres.map(genre=>
+                                                                genre.genre_name).join(', ') %>
+                                                        </td>
+                                                        <td>
+                                                            <%= movie.min %>
+                                                        </td>
+                                                        <td>
+                                                            <%= new Date(movie.release_date).toLocaleDateString() %>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn-view action-btn btn-view-color">
+                                                                <i class="uil uil-eye"></i>
+                                                            </button>
+                                                            <button class="btn-edit action-btn btn-edit-color">
+                                                                <i class="uil uil-pen"></i>
+                                                            </button>
+                                                            <form action="/delete_content/<%= movie._id %>"
+                                                                method="POST" style="display:inline;">
+                                                                <button type="submit"
+                                                                    class="btn-delete action-btn btn-delete-color">
+                                                                    <i class="uil uil-trash-alt"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="pagination">
+                                        <% if (currentPage> 1) { %>
+                                            <a href="/ad_movies?page=<%= currentPage - 1 %>&search=<%= searchQuery %>">
+                                                <i class="uil uil-arrow-left"></i> Previous
+                                            </a>
+                                            <% } %>
+                                                <% for (let i=1; i <=totalPages; i++) { %>
+                                                    <a href="/ad_movies?page=<%= i %>&search=<%= searchQuery %>"
+                                                        class="<%= currentPage === i ? 'active' : '' %>">
+                                                        <%= i %>
+                                                    </a>
+                                                    <% } %>
+                                                        <% if (currentPage < totalPages) { %>
+                                                            <a href="/ad_movies?page=<%= currentPage + 1 %>&search=<%= searchQuery %>"
+                                                                class="next-button">
+                                                                Next <i class="uil uil-arrow-right"></i>
+                                                            </a>
+                                                            <% } %>
+                                    </div>
+                                </div>
+            </div>
+
+            <div class="popup_add" id="popup_add">
+                <div class="popup_add-content">
+                    <span id="popup_add-close"></span>
+                    <h2>Add New Movie</h2>
+                    <form action="/create_content" method="POST" enctype="multipart/form-data">
+                        <label for="content_name">Movie Name:</label>
+                        <input type="text" id="content_name" name="content_name" placeholder="Enter movie name"
+                            required>
+
+                        <label for="movie-genre">Genre:</label>
+                        <div class="select-container">
+                            <select id="movie-genre" name="genre" multiple required>
+                                <% genres.forEach(genre=> { %>
+                                    <option value="<%= genre._id %>">
+                                        <%= genre.genre_name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+
+                        <!-- Agrupando os campos Hours e Release Date -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="min">Min:</label>
+                                <input type="number" id="min" name="min" placeholder="Enter Min" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="release_date">Release Date:</label>
+                                <input type="date" id="release_date" name="release_date"
+                                    placeholder="Enter release year" required>
+                            </div>
+                        </div>
+
+                        <label for="movie-where_to_watch">Where to Watch:</label>
+                        <div class="select-container">
+                            <select id="movie-where_to_watch" name="where" multiple required>
+                                <% whereToWatch.forEach(service=> { %>
+                                    <option value="<%= service._id %>">
+                                        <%= service.where_name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="average_rate">Average Rate:</label>
+                            <input type="number" id="average_rate" name="average_rate" step="0.1" min="1" max="10"
+                                placeholder="Enter average rate" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="movie-poster_image">Poster Image:</label>
+                                <input type="file" id="movie-poster_image" name="poster_image" accept="image/*"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label for="movie-background_image">Background Image:</label>
+                                <input type="file" id="movie-background_image" name="background_image" accept="image/*"
+                                    required>
+                            </div>
+                        </div>
+                        <label for="movie-category">Description:</label>
+                        <textarea id="description" name="description" rows="2" cols="50"
+                            placeholder="Enter the description" required></textarea>
+
+                        <button type="submit" class="btn-submit">Add Movie</button>
+                        <button type="button" class="btn-cancel-add" id="popup_add-cancel">Cancel</button>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="popup_add" id="popup-delete">
+                <div class="popup_add-content">
+                    <h2>Confirm Delete</h2>
+                    <p>Are you sure you want to delete this item?</p>
+                    <div class="popup_add-buttons">
+                        <button class="btn-confirm-delete" id="confirm-delete-btn">Yes, Delete</button>
+                        <button class="btn-cancel-delete" onclick="closePopup()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="popup_add" id="popup_edit">
+                <div class="popup_add-content">
+                    <span id="popup_edit-close"></span>
+                    <h2>Edit a Movie</h2>
+                    <form action="/update_content" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" id="edit-content_id" name="content_id">
+                        <label for="edit-content_name">Movie Name:</label>
+                        <input type="text" id="edit-content_name" name="content_name" placeholder="Enter movie name"
+                            required>
+
+                        <label for="edit-genres">Genres:</label>
+                        <input type="text" id="edit-genres" name="genres" readonly>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="edit-min">Min:</label>
+                                <input type="number" id="edit-min" name="min" placeholder="Enter Min" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-release_date">Release Date:</label>
+                                <input type="date" id="edit-release_date" name="release_date"
+                                    placeholder="Enter release year" required>
+                            </div>
+                        </div>
+
+                        <label for="edit-where_to_watch">Where to Watch:</label>
+                        <input type="text" id="edit-where_to_watch" name="where_to_watch" readonly>
+
+                        <div class="form-group">
+                            <label for="edit-average_rate">Average Rate:</label>
+                            <input type="number" id="edit-average_rate" name="average_rate" step="0.1" min="1" max="10"
+                                placeholder="Enter average rate" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="edit-movie-poster_image">Poster Image:</label>
+                                <img id="edit-movie-poster_image-preview" class="img_view_poster" src=""
+                                    alt="Poster Image">
+                                <input type="file" id="edit-movie-poster_image" name="poster_image" accept="image/*">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-movie-background_image">Background Image:</label>
+                                <img id="edit-movie-background_image-preview" class="img_view_back" src=""
+                                    alt="Background Image">
+                                <input type="file" id="edit-movie-background_image" name="background_image"
+                                    accept="image/*">
+                            </div>
+                        </div>
+                        <label for="edit-description">Description:</label>
+                        <textarea id="edit-description" name="description" rows="2" cols="50"
+                            placeholder="Enter the description" required></textarea>
+
+                        <button type="submit" class="btn-submit">Save Changes</button>
+                        <button type="button" class="btn-cancel-delete" id="popup_edit-cancel">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="popup_add" id="popup_view">
+                <div class="popup_add-content">
+                    <span id="popup_view-close"></span>
+                    <h2>View a Movie</h2>
+                    <form>
+                        <label for="view-content_name">Movie Name:</label>
+                        <input type="text" id="view-content_name" name="content_name" placeholder="Enter movie name"
+                            required readonly>
+
+                        <label for="view-genres">Genres:</label>
+                        <input type="text" id="view-genres" name="view_genres" readonly>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="view-min">Min:</label>
+                                <input type="number" id="view-min" name="min" placeholder="Enter min" required readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="view-release_date">Release Date:</label>
+                                <input type="date" id="view-release_date" name="release_date"
+                                    placeholder="Enter release year" required readonly>
+                            </div>
+                        </div>
+
+                        <label for="view-where_to_watch">Where to Watch:</label>
+                        <input type="text" id="view-where_to_watch" name="view_where_to_watch" readonly>
+
+                        <div class="form-group">
+                            <label for="view-average_rate">Average Rate:</label>
+                            <input type="number" id="view-average_rate" name="average_rate" step="0.1" min="1" max="10"
+                                placeholder="Enter average rate" required readonly>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="view-movie-poster_image">Poster Image:</label>
+                                <img class="img_view_poster" id="view-movie-poster_image" src="" alt="Poster Image">
+                            </div>
+                            <div class="form-group">
+                                <label for="view-movie-background_image">Background Image:</label>
+                                <img class="img_view_back" id="view-movie-background_image" src=""
+                                    alt="Background Image">
+                            </div>
+                        </div>
+                        <label for="view-description">Description:</label>
+                        <textarea id="view-description" name="description" rows="2" cols="50"
+                            placeholder="Enter the description" required readonly></textarea>
+
+                        <button type="button" class="btn-cancel-delete" id="popup_view-cancel">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+
+        </section>
+        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Sidebar Toggle
+                const body = document.querySelector("body"),
+                    sidebar = body.querySelector("nav"),
+                    sidebarToggle = body.querySelector(".sidebar-toggle");
+
+                let getStatus = localStorage.getItem("status");
+                if (getStatus && getStatus === "close") {
+                    sidebar.classList.toggle("close");
+                }
+
+                sidebarToggle.addEventListener("click", () => {
+                    sidebar.classList.toggle("close");
+                    sidebar.classList.toggle("open"); // Adicione esta linha para alternar a classe 'open'
+                    localStorage.setItem("status", sidebar.classList.contains("close") ? "close" : "open");
+                });
+
+                // Função genérica para gerenciar a exibição de popups
+                function togglePopup(popup, show) {
+                    popup.style.display = show ? "flex" : "none";
+                }
+
+                // Seleciona todos os popups
+                const popups = {
+                    add: document.getElementById("popup_add"),
+                    delete: document.getElementById("popup-delete"),
+                    edit: document.getElementById("popup_edit"),
+                    view: document.getElementById("popup_view")
+                };
+
+                // Evento para abrir popup de adicionar
+                const btnAdd = document.querySelector(".btn-add");
+                btnAdd.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    togglePopup(popups.add, true);
+                });
+
+                // Gerenciamento do popup de confirmação de exclusão
+                const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+                const cancelDeleteBtn = document.querySelector(".btn-cancel-delete");
+                let deleteFormAction = "";
+
+                document.querySelectorAll(".btn-delete").forEach(button => {
+                    button.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        deleteFormAction = e.target.closest("form").action;
+                        togglePopup(popups.delete, true);
+                    });
+                });
+
+                confirmDeleteBtn.addEventListener("click", () => {
+                    const deleteForm = document.createElement("form");
+                    deleteForm.method = "POST";
+                    deleteForm.action = deleteFormAction;
+                    document.body.appendChild(deleteForm);
+                    deleteForm.submit();
+                });
+
+
+
+                cancelDeleteBtn.addEventListener("click", () => togglePopup(popups.delete, false));
+                document.getElementById("popup_add-cancel").addEventListener("click", () => togglePopup(popups.add, false));
+
+
+                document.querySelectorAll(".btn-edit, .btn-view").forEach(button => {
+                    button.addEventListener("click", async (e) => {
+                        e.preventDefault();
+                        const contentId = button.closest("tr").dataset.id;
+                        const popupType = button.classList.contains("btn-edit") ? "edit" : "view";
+
+                        try {
+                            const response = await fetch(`/content/${contentId}`);
+                            const content = await response.json();
+
+                            if (response.ok) {
+                                const prefix = popupType === "edit" ? "edit-" : "view-";
+                                document.getElementById(`${prefix}content_name`).value = content.content_name;
+                                document.getElementById(`${prefix}min`).value = content.min;
+                                document.getElementById(`${prefix}release_date`).value = new Date(content.release_date).toISOString().split('T')[0];
+                                document.getElementById(`${prefix}description`).value = content.description;
+                                document.getElementById(`${prefix}average_rate`).value = content.average_rate; // Preencher o campo average_rate
+
+                                // Set the genres input field
+                                const genresInput = document.getElementById(`${prefix}genres`);
+                                genresInput.value = content.contentGenres.map(genre => genre.genre_name).join(', ');
+
+                                // Set the where to watch input field
+                                const whereInput = document.getElementById(`${prefix}where_to_watch`);
+                                whereInput.value = content.contentWhere.map(where => where.where_name).join(', ');
+
+                                // Set the image sources
+                                if (popupType === "view" || popupType === "edit") {
+                                    document.getElementById("view-movie-poster_image").src = content.img_content;
+                                    document.getElementById("view-movie-background_image").src = content.img_background;
+                                }
+
+                                togglePopup(popups[popupType], true);
+                            } else {
+                                console.error("Error fetching content:", content.error);
+                            }
+                        } catch (error) {
+                            console.error("Error fetching content:", error);
+                        }
+                    });
+                });
+
+                document.getElementById("popup_edit-close").addEventListener("click", () => togglePopup(popups.edit, false));
+                document.getElementById("popup_view-cancel").addEventListener("click", () => togglePopup(popups.view, false));
+                document.getElementById("popup_edit-cancel").addEventListener("click", () => togglePopup(popups.edit, false));
+
+                // Fechar popups ao clicar fora do conteúdo
+                window.addEventListener("click", (e) => {
+                    Object.values(popups).forEach(popup => {
+                        if (e.target === popup) togglePopup(popup, false);
+                    });
+                });
+
+                // Fechar mensagens flash automaticamente após 3 segundos
+                setTimeout(() => {
+                    const flashMessage = document.querySelector(".flash-message");
+                    if (flashMessage) {
+                        flashMessage.style.display = "none";
+                    }
+                }, 3000);
+
+                // Inicializar Choices.js para selects
+                const genreSelect = new Choices("#movie-genre", {
+                    removeItemButton: true,
+                    maxItemCount: 4,
+                    searchEnabled: true,
+                    noResultsText: "No genres found",
+                    noChoicesText: "No more options",
+                    itemSelectText: "",
+                    placeholder: true,
+                    placeholderValue: "Select genres"
+                });
+
+                const whereSelect = new Choices("#movie-where_to_watch", {
+                    removeItemButton: true,
+                    maxItemCount: 4,
+                    searchEnabled: true,
+                    noResultsText: "No platforms found",
+                    noChoicesText: "No more options",
+                    itemSelectText: "",
+                    placeholder: true,
+                    placeholderValue: "Select platforms"
+                });
+            });
+        </script>
+</body>
+
+</html>

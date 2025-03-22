@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Film Stream</title>
+  <link rel="stylesheet" href="/nav_in.css" />
+  <link rel="shortcut icon" href="/img/logo_b.png">
+  <!-- Unicons CSS -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+</head>
+
+<body>
+  <nav class="nav">
+    <i class="uil uil-bars navOpenBtn"></i>
+    <a href="/" class="logo">
+      <img src="/img/logo_b.png" alt="Logo" style="height: 40px;" />
+    </a>
+
+    <ul class="nav-links">
+      <i class="uil uil-times navCloseBtn"></i>
+      <li><a href="/shows" class="active">Shows</a></li>
+      <li><a href="/movies">Movies</a></li>
+      <li><a href="/explore">Explore</a></li>
+    </ul>
+
+    <img src="<%= user.avatar_url %>" alt="User Avatar" class="user-icon" id="userIcon" style="height: 40px; width: 40px; border-radius: 50%;" />
+
+    <div class="dropdown" id="dropdownMenu">
+      <ul>
+        <li class="name_icon logout"><img src="<%= user.avatar_url %>" alt="User Avatar"
+            style="height: 20px; width: 20px; border-radius: 50%;"><a href="/profile">Profile</a></li>
+        <li><i class="uil uil-user-circle"></i><a href="/account">Account</a></li>
+        <li class="logout"><i class="uil uil-setting"></i><a href="/settings">Settings</a></li>
+        <% if (user && user.isAdmin) { %>
+          <li><i class="uil uil-arrow-circle-left"></i><a href="/ad_home">Admin</a></li>
+        <% } %>
+            <li><i class="uil uil-signout" style="color: #f06272;"></i><a href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <script>
+    /*Codigo do menu responsivo*/
+    const nav = document.querySelector(".nav"),
+      navOpenBtn = document.querySelector(".navOpenBtn"),
+      navCloseBtn = document.querySelector(".navCloseBtn");
+
+    navOpenBtn.addEventListener("click", () => {
+      nav.classList.add("openNav");
+      nav.classList.remove("openSearch");
+      searchIcon.classList.replace("uil-times", "uil-search");
+    });
+
+    navCloseBtn.addEventListener("click", () => {
+      nav.classList.remove("openNav");
+    });
+
+    const userIcon = document.getElementById("userIcon");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+
+    let dropdownTimeout;
+
+    document.getElementById('userIcon').addEventListener('mouseover', function () {
+      clearTimeout(dropdownTimeout);
+      document.getElementById('dropdownMenu').style.display = 'block';
+    });
+
+    document.getElementById('userIcon').addEventListener('mouseout', function () {
+      dropdownTimeout = setTimeout(function () {
+        document.getElementById('dropdownMenu').style.display = 'none';
+      }, 150); // Atraso de 150ms
+    });
+
+    document.getElementById('dropdownMenu').addEventListener('mouseover', function () {
+      clearTimeout(dropdownTimeout);
+      document.getElementById('dropdownMenu').style.display = 'block';
+    });
+
+    document.getElementById('dropdownMenu').addEventListener('mouseout', function () {
+      dropdownTimeout = setTimeout(function () {
+        document.getElementById('dropdownMenu').style.display = 'none';
+      }, 150); // Atraso de 150ms
+    });
+
+
+
+  </script>
+</body>
+
+</html>

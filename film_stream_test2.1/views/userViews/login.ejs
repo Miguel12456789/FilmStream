@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Film Stream</title>
+  <link rel="stylesheet" href="/login.css">
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+  <link rel="shortcut icon" href="img/logo_b.png">
+</head>
+
+<body>
+  <div class="wrapper">
+    <h1>Login</h1>
+
+    <div class="social-login-buttons">
+      <button class="google-login">
+        <i class="uil uil-google"></i> Login with Google
+      </button>
+      <button class="apple-login">
+        <i class="uil uil-apple"></i> Login with Apple
+      </button>
+    </div>
+
+    <div class="divider"><span>or</span></div>
+
+    <form action="/login" method="post" id="form">
+      <% if (error && error.length> 0) { %>
+        <div class="flash-message">
+          <%= error %>
+        </div>
+        <% } %>
+
+          <div>
+            <label for="email-input" class="label_0">
+              <span>@</span>
+            </label>
+            <input type="email" name="email" id="email-input" placeholder="Email" required>
+          </div>
+          <div>
+            <label for="password-input">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path
+                  d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" />
+              </svg>
+            </label>
+            <input type="password" name="password" id="password-input" placeholder="Password" required>
+          </div>
+
+          <div class="form-options">
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+
+          <input class="send-btn" type="submit" value="Send">
+    </form>
+    <p>New here? <a href="/signup">Create an Account</a></p>
+  </div>
+
+  <!-- Popup Modal -->
+  <!-- Popup Modal -->
+  <div id="forgot-password-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Reset Password</h2>
+      <form action="/reset-password" method="post">
+        <label for="reset-email">Enter your email:</label>
+        <input type="email" id="reset-email" name="email" required>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const forgotPasswordLink = document.querySelector(".forgot-password");
+      const modal = document.getElementById("forgot-password-modal");
+      const closeModal = modal.querySelector(".close");
+
+      // Open modal on link click
+      forgotPasswordLink.addEventListener("click", function (e) {
+        e.preventDefault(); // Prevent default link behavior
+        modal.style.display = "block";
+      });
+
+      // Close modal on "X" click
+      closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+
+      // Close modal if user clicks outside of the modal content
+      window.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
+
+<style>
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+  }
+</style>

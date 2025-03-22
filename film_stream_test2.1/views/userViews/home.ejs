@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Stream</title>
+    <link rel="stylesheet" href="/pages.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11.2.1/swiper-bundle.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Include the correct nav file based on the session -->
+    <%- include(`../components/${navFile}`) %>
+        <!-- Home  -->
+        <section class="home swiper" id="home">
+            <div class="swiper-wrapper">
+                <% 
+                // Selecionar 2 filmes aleatórios
+                const randomMovies = contents.sort(() => 0.5 - Math.random()).slice(0, 5);
+                randomMovies.forEach(movie => {
+                %>
+                    <div class="swiper-slide home-container">
+                        <img src="<%= movie.img_background %>" alt="<%= movie.content_name %>">
+                        <div class="home-text">
+                            <h1>
+                                <%= movie.content_name %>
+                            </h1>
+                            <a href="/m/<%= movie._id %>" class="heading-home-btn">See More
+                                <i class="uil uil-angle-right-b"></i>
+                            </a>
+                            <div class="swiper-button-prev custom-swiper-button"></div>
+                            <div class="swiper-button-next custom-swiper-button"></div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+            <div class="swiper-pagination"></div>
+        </section>
+
+        <!-- Movies  -->
+        <div class="movies-home" id="movies-home">
+            <div class="heading-home">
+                <h2 class="heading-home-title">Movies In Theaters </h2>
+                <a href="/movies" class="heading-home-btn">More...
+                    <i class="uil uil-angle-right-b"></i>
+                </a>
+            </div>
+
+            <div class="movies-container-home">
+                <% if (contents && contents.length > 0) { %>
+                    <% contents.forEach(content => { %>
+                        <a href="/m/<%= content._id %>">
+                            <div class="box-home">
+                                <div class="box-img-home">
+                                    <img src="<%= content.img_content %>" alt="<%= content.content_name %>">
+                                    <div class="overlay">
+                                        <div class="overlay-text">
+                                            <i class="uil uil-star"></i>
+                                            <p><%= content.average_rate %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h3>
+                                    <%= content.content_name %>
+                                </h3>
+                                <span>
+                                    <%= content.min %> min
+                                </span>
+                            </div>
+                        </a>
+                    <% }) %>
+                <% } else { %>
+                    <p>No movies available.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Shows  -->
+        <div class="movies-home" id="movies-home">
+            <div class="heading-home">
+                <h2 class="heading-home-title">Shows in Streaming</h2>
+                <a href="/shows" class="heading-home-btn">More...
+                    <i class="uil uil-angle-right-b"></i>
+                </a>
+            </div>
+
+            <div class="movies-container-home">
+                <% if (contents && contents.length > 0) { %>
+                    <% contents.forEach(content => { %>
+                        <a href="/m/<%= content._id %>">
+                            <div class="box-home">
+                                <div class="box-img-home">
+                                    <img src="<%= content.img_content %>" alt="<%= content.content_name %>">
+                                    <div class="overlay">
+                                        <div class="overlay-text">
+                                            <i class="uil uil-star"></i>
+                                            <p>
+                                                <%= content.average_rate %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h3>
+                                    <%= content.content_name %>
+                                </h3>
+                                <span>
+                                    <%= content.min %> min
+                                </span>
+                            </div>
+                        </a>
+                    <% }) %>
+                <% } else { %>
+                    <p>No shows available.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <%- include('../components/footer') %>
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.1/swiper-bundle.min.js"></script>
+        <script>
+            const swiper = new Swiper('.swiper', {
+                loop: true,
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                }
+            });
+        </script>
+</body>
+
+</html>

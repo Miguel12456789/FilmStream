@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Film Stream</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    
+</head>
+
+<body>
+    <%- include('../components/ad_sidebar') %>
+
+        <section class="dashboard">
+            <div class="top">
+                <i class="uil uil-bars sidebar-toggle"></i>
+                <div class="search-box">
+                    <i class="uil uil-search"></i>
+                    <form action="/ad_genre" method="get">
+                        <input type="text" name="search" placeholder="Search here..." value="<%= searchQuery %>">
+                    </form>
+                </div>
+            </div>
+            <div class="dash-content">
+                <% if (error2.length> 0) { %>
+                    <div class="flash-message error">
+                        <%= error2 %>
+                    </div>
+                    <% } %>
+
+                        <% if (success2.length> 0) { %>
+                            <div class="flash-message success">
+                                <%= success2 %>
+                            </div>
+                            <% } %>
+                                <div class="activity">
+                                    <div class="title">
+                                        <i class="uil uil-postcard"></i>
+                                        <span class="text">Genre List</span>
+                                        <a href="#" class="btn-add">+ Add Genre</a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Genre</th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% genres.forEach(genre=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= genre.genre_name %>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn-edit action-btn btn-edit-color">
+                                                                <i class="uil uil-pen"></i>
+                                                            </button>
+                                                            <button class="btn-delete action-btn btn-delete-color"
+                                                                data-id="<%= genre._id %>">
+                                                                <i class="uil uil-trash-alt"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    <div class="pagination">
+                                        <% if (currentPage> 1) { %>
+                                            <a href="/ad_genre?page=<%= currentPage - 1 %>&search=<%= searchQuery %>">
+                                                <i class="uil uil-arrow-left"></i> Previous
+                                            </a>
+                                            <% } %>
+                                                <% for (let i=1; i <=totalPages; i++) { %>
+                                                    <a href="/ad_genre?page=<%= i %>&search=<%= searchQuery %>"
+                                                        class="<%= currentPage === i ? 'active' : '' %>">
+                                                        <%= i %>
+                                                    </a>
+                                                    <% } %>
+                                                        <% if (currentPage < totalPages) { %>
+                                                            <a href="/ad_genre?page=<%= currentPage + 1 %>&search=<%= searchQuery %>"
+                                                                class="next-button">
+                                                                Next <i class="uil uil-arrow-right"></i>
+                                                            </a>
+                                                            <% } %>
+                                    </div>
+                                </div>
+            </div>
+
+            <!-- Add -->
+            <div class="popup_add" id="popup_add">
+                <div class="popup_add-content">
+                    <h2>Add Genre</h2>
+                    <form action="/create-genre" method="post">
+                        <label for="genre-name">Genre:</label>
+                        <input type="text" id="genre-name" name="genre_name" placeholder="Enter genre name" required>
+                        <button type="submit" class="btn-submit">Add Genre</button>
+                        <button class="btn-cancel-add" onclick="closePopup()">Cancel</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Delete -->
+            <div class="popup_add" id="popup-delete">
+                <div class="popup_add-content">
+                    <h2>Confirm Delete</h2>
+                    <p>Are you sure you want to delete this item?</p>
+                    <form id="delete-genre-form" method="post">
+                        <div class="popup_add-buttons">
+                            <button class="btn-confirm-delete">Yes, Delete</button>
+                            <button class="btn-cancel-delete" onclick="closePopup()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Edit -->
+            <div class="popup_add" id="popup-edit">
+                <div class="popup_add-content">
+                    <h2>Edit Genre</h2>
+                    <form id="edit-genre-form" method="post">
+                        <input type="hidden" id="edit-genre-id" name="id">
+                        <label for="edit-genre-name">Gênero:</label>
+                        <input type="text" id="edit-genre-name" name="genre_name"
+                            placeholder="Digite o novo nome do gênero" required>
+                        <div class="popup_add-buttons">
+                            <button type="submit" class="btn-submit">Save Changes</button>
+                            <button class="btn-cancel-edit" onclick="closePopup()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <script>
+            // Sidebar Toggle
+            const body = document.querySelector("body"),
+                sidebar = body.querySelector("nav"),
+                sidebarToggle = body.querySelector(".sidebar-toggle");
+
+            if (localStorage.getItem("status") === "close") {
+                sidebar.classList.add("close");
+            }
+
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("close");
+                localStorage.setItem("status", sidebar.classList.contains("close") ? "close" : "open");
+            });
+
+            // Função para abrir o popup
+            function openPopup(buttonSelector, popupElement) {
+                document.querySelectorAll(buttonSelector).forEach(button => {
+                    button.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        popupElement.style.display = "flex";
+                    });
+                });
+            }
+
+            // Função para fechar o popup ao clicar fora dele
+            function closePopupOnClickOutside(popupElement) {
+                window.addEventListener("click", (e) => {
+                    if (e.target === popupElement) {
+                        popupElement.style.display = "none";
+                    }
+                });
+            }
+
+            // Função para fechar o popup ao clicar no botão de cancelar
+            function closePopupOnCancel(buttonSelector, popupElement) {
+                document.querySelector(buttonSelector).addEventListener("click", (e) => {
+                    e.preventDefault();
+                    popupElement.style.display = "none";
+                });
+            }
+
+            // Inicializando Popups
+            const popupAdd = document.getElementById("popup_add");
+            const popupDelete = document.getElementById("popup-delete");
+            const popupEdit = document.getElementById("popup-edit");
+
+            openPopup(".btn-add", popupAdd);
+            openPopup(".btn-edit", popupEdit); // AGORA FUNCIONA PARA TODOS OS BOTÕES DE EDITAR
+
+            document.querySelectorAll(".btn-delete").forEach(button => {
+                button.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const genreId = button.getAttribute('data-id');
+                    const deleteForm = document.getElementById('delete-genre-form');
+                    deleteForm.action = `/delete-genre/${genreId}`;
+                    popupDelete.style.display = "flex";
+                });
+            });
+
+            document.querySelectorAll(".btn-edit").forEach(button => {
+                button.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const row = button.closest("tr");
+                    const genreId = row.querySelector(".btn-delete").getAttribute("data-id");
+                    const genreName = row.cells[0].textContent.trim();
+
+                    document.getElementById("edit-genre-id").value = genreId;
+                    document.getElementById("edit-genre-name").value = genreName;
+                    document.getElementById("edit-genre-form").action = `/update-genre/${genreId}`;
+
+                    document.getElementById("popup-edit").style.display = "flex";
+                });
+            });
+
+            // Fechar ao clicar fora
+            closePopupOnClickOutside(popupAdd);
+            closePopupOnClickOutside(popupDelete);
+            closePopupOnClickOutside(popupEdit);
+
+            // Fechar ao clicar no botão de cancelar
+            closePopupOnCancel(".btn-cancel-delete", popupDelete);
+            closePopupOnCancel(".btn-cancel-edit", popupEdit);
+            closePopupOnCancel(".btn-cancel-add", popupAdd); // Adicionando evento para o botão de cancelar do popup de adicionar
+
+
+            // Esconder mensagens flash após 3 segundos
+            setTimeout(() => {
+                const flashMessage = document.querySelector(".flash-message");
+                if (flashMessage) {
+                    flashMessage.style.display = "none";
+                }
+            }, 3000);
+        </script>
+</body>
+
+</html>

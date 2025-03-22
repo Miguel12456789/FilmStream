@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Film Stream</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+</head>
+
+<body>
+    <%- include('../components/ad_sidebar') %>
+
+    <section class="dashboard">
+        <div class="top">
+            <i class="uil uil-bars sidebar-toggle"></i>
+            <div class="search-box">
+                <i class="uil uil-search"></i>
+                <form action="/ad_home" method="get">
+                    <input type="text" name="search" placeholder="Search here..." value="<%= searchQuery %>">
+                </form>
+            </div>
+        </div>
+
+        <div class="dash-content">
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-tachometer-fast-alt"></i>
+                    <span class="text">Dashboard</span>
+                </div>
+                <div class="boxes">
+                    <div class="box box1">
+                        <i class="uil uil-clapper-board"></i>
+                        <span class="text">Total Movies</span>
+                        <span class="number">
+                            <%= totalContents %>
+                        </span>
+                    </div>
+                    <div class="box box2">
+                        <i class="uil uil-postcard"></i>
+                        <span class="text">Total Genres</span>
+                        <span class="number">
+                        <%= totalGenres %>
+                        </span>
+                    </div>
+                    <div class="box box3">
+                        <i class="uil uil-user"></i>
+                        <span class="text">Total Users</span>
+                        <span class="number">
+                            <%= totalUsers %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="activity">
+                <div class="title">
+                    <i class="uil uil-clock-eight"></i>
+                    <span class="text">Recent Activity</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Genre</th>
+                                <th scope="col">Min</th>
+                                <th scope="col">Release</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% contents.forEach(content => { %>
+                            <tr>
+                                <td><img src="<%= content.img_content %>" alt="<%= content.content_name %>" width="50"></td>
+                                <td><%= content.content_name %></td>
+                                <td><%= content.contentGenres.map(genre => genre.genre_name).join(', ') %></td>
+                                <td><%= content.min %></td>
+                                <td><%= new Date(content.release_date).toLocaleDateString() %></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        const body = document.querySelector("body"),
+            modeToggle = body.querySelector(".mode-toggle");
+        sidebar = body.querySelector("nav");
+        sidebarToggle = body.querySelector(".sidebar-toggle");
+        let getStatus = localStorage.getItem("status");
+        if (getStatus && getStatus === "close") {
+            sidebar.classList.toggle("close");
+        }
+
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+            if (sidebar.classList.contains("close")) {
+                localStorage.setItem("status", "close");
+            } else {
+                localStorage.setItem("status", "open");
+            }
+        })
+    </script>
+</body>
+
+</html>

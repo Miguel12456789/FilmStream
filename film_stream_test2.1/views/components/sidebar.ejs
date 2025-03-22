@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Stream</title>
+    <link rel="stylesheet" href="/nav_in.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+
+</head>
+
+<body>
+    <!-- Include the correct nav file based on the session -->
+
+    <!-- Conteúdo da página sidebar -->
+    <aside class="sidebar">
+        <ul class="sidebar-links">
+            <li>
+                <a href="/profile">
+                    <img src="<%= user.avatar_url%>" alt="Avatar" class="avatar" style="height: 30px; width: 30px; border-radius: 50%;">Profile
+                </a>
+            </li>
+            <li>
+                <a href="/account"><i class="uil uil-user-circle"></i>Account</a>
+            </li>
+            <li>
+                <a href="/settings"><i class="uil uil-setting"></i>Settings</a>
+            </li>
+            <h4>
+                <div class="menu-separator"></div>
+            </h4>
+            <% if (user.isAdmin) { %>
+            <li class="admin-back">
+                <a href="/ad_home"><i class="uil uil-arrow-circle-left"></i>Admin</a>
+            </li>
+            <% } %>
+            <li>
+                <a href="/logout"><i class="uil uil-signout"></i>Logout</a>
+            </li>
+        </ul>
+    </aside>
+</body>
+
+</html>

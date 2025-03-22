@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Film Stream</title>
+  <link rel="stylesheet" href="/nav.css" />
+  <link rel="shortcut icon" href="/img/logo_b.png">
+  <!-- Unicons CSS -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+</head>
+
+<body>
+  <nav class="nav">
+    <i class="uil uil-bars navOpenBtn"></i>
+    <a href="/" class="logo">
+      <img src="/img/logo_b.png" alt="Logo" style="height: 50px;" />
+    </a>
+
+    <ul class="nav-links">
+      <i class="uil uil-times navCloseBtn"></i>
+      <li><a href="/shows">Shows</a></li>
+      <li><a href="/movies">Movies</a></li>
+      <li><a href="/explore">Explore</a></li>
+      <!-- Remover os botões e colocar links diretamente -->
+      <li class="responsive-auth-buttons">
+        <a href="/login" class="login">Login</a>
+        <a href="/signup" class="signup">Sign up for free</a>
+      </li>
+    </ul>
+
+    <!-- Botões de Login fora do menu responsivo -->
+    <div class="auth-buttons">
+      <a href="/login" class="login">Login</a>
+      <a href="/signup" class="signup">Sign up for free</a>
+    </div>
+</nav>
+
+  <script>
+    /*Codigo do menu responsivo*/
+    const nav = document.querySelector(".nav"),
+      navOpenBtn = document.querySelector(".navOpenBtn"),
+      navCloseBtn = document.querySelector(".navCloseBtn");
+
+    navOpenBtn.addEventListener("click", () => {
+      nav.classList.add("openNav");
+      nav.classList.remove("openSearch");
+      searchIcon.classList.replace("uil-times", "uil-search");
+    });
+
+    navCloseBtn.addEventListener("click", () => {
+      nav.classList.remove("openNav");
+    });
+  </script>
+
+
+</body>
+
+</html>

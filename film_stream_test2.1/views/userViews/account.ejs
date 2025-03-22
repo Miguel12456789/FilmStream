@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Stream</title>
+    <link rel="stylesheet" href="/pages.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+</head>
+
+<body>
+    <!-- Include the correct nav file based on the session -->
+    <%- include(`../components/${navFile}`) %>
+        <!-- Include the sidebar -->
+        <%- include('../components/sidebar') %>
+            <div class="account-body">
+                <!-- Conteúdo da página account -->
+                <div class="title_account">
+                    <h2>Account Setting</h2>
+                </div>
+                <div class="profile-box">
+                    <div class="profile-section avatar_section">
+                        <img src="<%= user.avatar_url%>" alt="Avatar" width="100" height="100">
+                    </div>
+                    <div class="profile-section info_section">
+                        <button class="change-avatar-button" onclick="openPopup_account_avatar()">Change Avatar
+                            Icon</button>
+                        <form id="update-username-form" action="/update-username" method="post">
+                            <div class="input-group">
+                                <label for="username">Username:</label>
+                                <input type="text" id="username" name="username" value="<%= user.name %>" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+                            </div>
+                            <button type="submit" class="save-changes-button">Save</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Popup Modal -->
+                <div id="popup_account_avatar" class="popup popup-avatar hidden" onclick="outsideClick(event)">
+                    <div class="popup-content-account">
+                        <h3>Change your Avatar</h3>
+                        <p>Select a new avatar icon.</p>
+                        <div id="avatar-list" class="avatar-list">
+                            <!-- Botões de avatar serão adicionados aqui -->
+                        </div>
+                        <button class="close-avatar-popup-button" onclick="closePopup_account_avatar()">Close</button>
+                    </div>
+                </div>
+
+                <!-- Popup de Sucesso -->
+                <div id="success-popup-account" class="popup hidden" onclick="outsideClick(event)">
+                    <div class="popup-content-account">
+                        <i class="uil uil-check-circle"></i>
+                        <h3>Success!</h3>
+                        <p>Changes saved successfully!</p>
+                        <button onclick="closePopup('success-popup-account')">Close</button>
+                    </div>
+                </div>
+
+                <!-- Popup de Erro -->
+                <div id="popup-error" class="popup hidden" onclick="outsideClick(event)">
+                    <div class="popup-content-account">
+                        <i class="uil uil-exclamation-triangle"></i>
+                        <h3>Error!</h3>
+                        <p>Username taken. Choose a different one.</p>
+                        <button onclick="closePopup('popup-error')">Close</button>
+                    </div>
+                </div>
+
+            </div>
+            <script>
+                // quando clicar fora do popup, ele fecha
+                function outsideClick(event) {
+                    const popupAvatar = document.getElementById('popup_account_avatar');
+                    const successPopup = document.getElementById('success-popup-account');
+                    const errorPopup = document.getElementById('popup-error');
+            
+                    if (event.target === popupAvatar) {
+                        closePopup_account_avatar();
+                    } else if (event.target === successPopup) {
+                        closePopup('success-popup-account');
+                    } else if (event.target === errorPopup) {
+                        closePopup('popup-error');
+                    }
+                }
+            
+                // Exibir popup baseado no parâmetro da URL
+                window.onload = function () {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const popupType = urlParams.get('popup'); // Obtém o valor do parâmetro "popup"
+            
+                    if (popupType === 'show') {
+                        document.getElementById('success-popup-account').classList.remove('hidden');
+                    } else if (popupType === 'error') {
+                        document.getElementById('popup-error').classList.remove('hidden');
+                    }
+            
+                    // Carregar avatares
+                    loadAvatars();
+                };
+            
+                // Fechar popup
+                function closePopup(popupId) {
+                    document.getElementById(popupId).classList.add('hidden');
+                }
+            
+                // Abrir popup do avatar
+                function openPopup_account_avatar() {
+                    document.getElementById('popup_account_avatar').classList.remove('hidden');
+                }
+            
+                // Fechar popup do avatar
+                function closePopup_account_avatar() {
+                    document.getElementById('popup_account_avatar').classList.add('hidden');
+                }
+            
+                // Carregar avatares e exibi-los como botões
+                async function loadAvatars() {
+                    try {
+                        const response = await fetch('/all-avatars');
+                        const avatars = await response.json();
+                        const avatarList = document.getElementById('avatar-list');
+            
+                        avatars.forEach(avatar => {
+                            const button = document.createElement('button');
+                            button.classList.add('avatar-button');
+                            button.innerHTML = `<img src="${avatar.avatar_url}" alt="Avatar" width="50" height="50">`;
+                            button.onclick = () => selectAvatar(avatar.avatar_url, button);
+                            avatarList.appendChild(button);
+                        });
+                    } catch (error) {
+                        console.error('Erro ao carregar avatares:', error);
+                    }
+                }
+            
+                // Selecionar avatar
+                async function selectAvatar(url, button) {
+                    // Remove a classe 'active' de todos os botões
+                    const buttons = document.querySelectorAll('.avatar-button');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+            
+                    // Adiciona a classe 'active' ao botão clicado
+                    button.classList.add('active');
+            
+                    // Atualizar o avatar do usuário
+                    try {
+                        const response = await fetch('/update-avatar', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ avatar_url: url })
+                        });
+            
+                        if (response.ok) {
+                            console.log('Avatar atualizado com sucesso:', url);
+                            document.querySelector('.avatar_section img').src = url;
+                            closePopup_account_avatar();
+                            
+                            // Exibir popup de sucesso
+                            document.getElementById('success-popup-account').classList.remove('hidden');
+                        } else {
+                            console.error('Erro ao atualizar o avatar:', await response.text());
+                        }
+                    } catch (error) {
+                        console.error('Erro ao atualizar o avatar:', error);
+                    }
+                }
+            </script>
+            
+</body>
+
+</html>

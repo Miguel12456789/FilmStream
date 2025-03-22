@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Stream</title>
+    <link rel="stylesheet" href="/pages.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+</head>
+
+<body>
+    <!-- Include the correct nav file based on the session -->
+    <%- include('../components/' + navFile) %>
+    
+    <div class="summary-wapper-c">
+            <img src="<%= content.img_background %>" alt="<%= content.content_name %>">
+        </div>
+
+        <section class="summary-wapper-s">
+            <div class="summary-poster">
+                <img src="<%= content.img_content %>" alt="<%= content.content_name %>">
+                <div class="title-poster">
+                    <h2>
+                        <%= content.content_name %>
+                    </h2>
+                    <h4>
+                        <%= new Date(content.release_date).getFullYear() %>
+                    </h4>
+                </div>
+            </div>
+            <div class="btn-under-poster">
+                <a href="" class="btn-m btn-m-rate">
+                    <i class="uil uil-favorite"></i>
+                </a>
+                <a href="" class="btn-m btn-m-like">
+                    <i class="uil uil-thumbs-up"></i>
+                </a>
+                <a href="" class="btn-m btn-m-dislike">
+                    <i class="uil uil-thumbs-down"></i>
+                </a>
+            </div>
+
+            <div class="synopsis-text">
+                <p class="synopsis">
+                    <%= content.description %>
+                </p>
+            </div>
+            <div class="grid-container-btn">
+                <a href="#" class="grid-item btn-checkin">
+                    <i class="uil uil-check-circle"></i>Check in
+                </a>
+                <a href="#" class="grid-item btn-oo">
+                    <i class="uil uil-notebooks"></i>Whacht List
+                </a>
+                <a href="#" class="grid-item btn-oo">
+                    <i class="uil uil-comment-alt-dots"></i>Add Comment
+                </a>
+            </div>
+        </section>
+        <%- include('../components/footer') %>
+    
+</body>
+
+</html>

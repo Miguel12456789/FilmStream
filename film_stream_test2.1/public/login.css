@@ -1,0 +1,264 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/*node scr/index.js*/
+:root {
+  --accent-color: #AC1F1F;
+  --base-color: #141414;
+  --text-color: #FFF;
+  --input-color: #171717;
+  --error-color: #f06272;
+  --divider-color: #6c757d;
+  --divider-color2: #e0e0e0;
+  --border-social-color: #F3F3F4;
+  --btn-hover-color: #921b1b;
+
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: Poppins, Segoe UI, sans-serif;
+  font-size: 12pt;
+  color: var(--text-color);
+  text-align: center;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #000000;
+  background-image: url("https://www.transparenttextures.com/patterns/cartographer.png");
+  background-repeat: repeat;
+  overflow: hidden;
+}
+
+.wrapper {
+  box-sizing: border-box;
+  background-color: var(--base-color);
+  height: 100vh;
+  width: max(40%, 600px);
+  padding: 10px;
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+form {
+  width: min(400px, 100%);
+  margin-top: 20px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+form>div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+form label {
+  flex-shrink: 0;
+  height: 50px;
+  width: 50px;
+  background-color: var(--accent-color);
+  fill: var(--text-color);
+  color: var(--base-color);
+  border-radius: 5px 0 0 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+form input {
+  box-sizing: border-box;
+  flex-grow: 1;
+  min-width: 0;
+  height: 50px;
+  padding: 1em;
+  font: inherit;
+  border-radius: 0 5px 5px 0;
+  border: 2px solid var(--input-color);
+  border-left: none;
+  background-color: var(--input-color);
+  transition: 150ms ease;
+  color: var(--text-color);
+}
+
+form input:hover {
+  border-color: var(--accent-color);
+}
+
+form input:focus {
+  outline: none;
+  border-color: var(--btn-hover-color);
+}
+
+div:has(input:focus)>label {
+  background-color: var(--btn-hover-color);
+}
+
+form input::placeholder {
+  color: var(--text-color);
+}
+
+form span { 
+    color: var(--text-color);
+}
+
+.send-btn { 
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  padding: .85em 4em;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  font: inherit;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 150ms ease;
+}
+
+.send-btn:hover {
+  background-color: var(--btn-hover-color);
+}
+
+a {
+  text-decoration: none;
+  color: var(--accent-color);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+.forgot-password {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+
+.social-login-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin: 20px 0 10px;
+}
+
+.social-login-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 195px;
+  max-width: 400px;
+  height: 50px;
+  border: 1.5px solid var(--border-social-color);
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  background-color: var(--base-color);
+  color: var(--text-color);
+}
+
+.apple-login i {
+  position: relative;
+  top: -1px;
+  left: -2px;
+}
+
+.social-login-buttons button i {
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
+
+.google-login {
+  background-color: var(--input-color);
+  color: var(--text-color);
+}
+
+.apple-login {
+  background-color: var(--input-color);
+  color: var(--text-color);
+}
+
+.google-login:hover {
+  border: 1.5px solid var(--accent-color);
+}
+
+.apple-login:hover {
+  border: 1.5px solid var(--accent-color);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  margin: 20px 0;
+  color: var(--divider-color);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--divider-color2);
+  /* Cor e estilo da borda */
+  margin: 0 10px;
+  /* Espaçamento ao redor do texto */
+}
+
+.divider span {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  color: var(--divider-color);
+  
+}
+
+.flash-message {
+  color:var(--error-color);
+  margin-top: -35px;
+}
+
+/*Responsivo*/
+@media(max-width: 1100px) {
+  .wrapper {
+    width: min(600px, 100%);
+    border-radius: 0;
+  }
+}
+
+form div.incorrect label {
+  background-color: var(--error-color);
+}
+
+form div.incorrect input {
+  border-color: var(--error-color);
+}
+
+#error-message {
+  color: var(--error-color);
+}
