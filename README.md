@@ -36,3 +36,23 @@ Film Stream é uma aplicação web para gestão de filmes e séries, permitindo 
 ### 1. Clonar repositório
 ```bash
 git clone https://github.com/teu-username/film-stream.git
+```
+
+### 2. Instalar dependências
+```bash
+npm install
+```
+### 3. Criar ficheiro `.env`
+
+Cria um ficheiro `.env` na raiz do projeto com o seguinte conteúdo:
+
+```env
+PORT=5000
+MONGO_URL=your_mongodb_connection
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+
+
