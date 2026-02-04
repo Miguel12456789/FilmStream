@@ -58,7 +58,3 @@ CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
 ### 4. Iniciar servidor
 ```bash
 node scr/server.js
-
-
-
-
